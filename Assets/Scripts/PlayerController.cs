@@ -6,31 +6,52 @@ public class PlayerController : MonoBehaviour
 {
     public float speed = 5.0f; // Speed of player movement
     public float jumpSpeed = 7.0f; // Speed of the jump
-
     private Transform playerTransform;
     private Rigidbody playerRB;
     private bool isGrounded; // Check if the player is grounded
+    private AudioSource audio;
+    private AudioClip ping;
 
     // Start is called before the first frame update
     void Start()
     {
         // Initialize player's Transform and Rigidbody components
-        playerTransform = GetComponent<Transform>();
+        playerTransform = transform;
         playerRB = GetComponent<Rigidbody>();
+        audio = GetComponent<AudioSource>();
     }
 
     // OnCollisionStay is called once per frame for every Collider/Rigidbody
     // that is touching the trigger.
-    private void OnCollisionStay(Collision collision)
+    private void OnCollisionStay(Collision c)
     {
-        isGrounded = true;
+        if ( c.collider.tag == "Ground")
+        {
+            isGrounded = true;
+            Debug.Log(c.GetContact(0));
+        }
     }
+        
 
     // OnCollisionExit is called when this Collider/Rigidbody has
     // stopped touching another rigidbody/Collider.
     private void OnCollisionExit(Collision collision)
     {
         isGrounded = false;
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Coin")
+        {
+            Debug.Log("Touch");
+            GetComponent<timeScore> ().coins += 1;
+            audio.clip = ping;
+            audio.Play(0);
+            GameObject.Destroy(other.gameObject);
+
+        }
     }
 
     // Update is called once per frame
@@ -49,5 +70,7 @@ public class PlayerController : MonoBehaviour
             playerRB.velocity = Vector3.up * jumpSpeed;
             isGrounded = false; // Prevent multiple jumps
         }
+
+        Debug.Log(isGrounded);
     }
 }
