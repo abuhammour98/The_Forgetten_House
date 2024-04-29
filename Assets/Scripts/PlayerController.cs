@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody playerRB;
     private bool isGrounded; // Check if the player is grounded
     private AudioSource audio;
-    private AudioClip ping;
+    public AudioClip ping;
 
     // Start is called before the first frame update
     void Start()
@@ -25,13 +25,13 @@ public class PlayerController : MonoBehaviour
     // that is touching the trigger.
     private void OnCollisionStay(Collision c)
     {
-        if ( c.collider.tag == "Ground")
+        if (c.collider.tag == "Ground")
         {
             isGrounded = true;
-            Debug.Log(c.GetContact(0));
+            //Debug.Log(c.GetContact(0));
         }
     }
-        
+
 
     // OnCollisionExit is called when this Collider/Rigidbody has
     // stopped touching another rigidbody/Collider.
@@ -43,10 +43,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Coin")
+        //Debug.Log(other.tag);
+        if (other.tag == "Coin")
         {
+
             Debug.Log("Touch");
-            GetComponent<timeScore> ().coins += 1;
+            GetComponent<timeScore>().coins++;
             audio.clip = ping;
             audio.Play(0);
             GameObject.Destroy(other.gameObject);
@@ -63,6 +65,7 @@ public class PlayerController : MonoBehaviour
 
         // Handle player rotation
         playerTransform.Rotate(new Vector3(0, Input.GetAxis("Mouse X"), 0));
+        // playerTransform.Rotate(new Vector3(Input.GetAxis("Mouse Y"),0, 0));
 
         // Handle player jumping
         if (isGrounded && Input.GetAxis("Jump") > 0)
@@ -71,6 +74,6 @@ public class PlayerController : MonoBehaviour
             isGrounded = false; // Prevent multiple jumps
         }
 
-        Debug.Log(isGrounded);
+        //Debug.Log(isGrounded);
     }
 }
